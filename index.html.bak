@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://unpkg.com/chart.js@4"></script>
+    <script src="https://unpkg.com/chartjs-chart-geo@4"></script>
+    <style>
+      .chartWrapper {
+  position: relative;
+}
+
+.chartWrapper > canvas {
+  position: absolute;
+  left: 0;
+  top: 0;
+  pointer-events: none;
+}
+
+.chartAreaWrapper {
+  width: 1500px;
+  overflow-x: scroll;
+}
+    </style>
+</head>
+<body>
+    <div>
+      <canvas style="display: relative;" id="map"></canvas>
+    </div>
+    <!-- <div class="chartWrapper">
+      <div class="chartAreaWrapper">
+        <canvas id="map" height="400" width="1500"></canvas>
+      </div>
+    </div> -->
+</body>
+
+<script>
+  // fetch('./idn.topo.json').then((r) => r.json()).then((mapdata) => {
+  // const nation = ChartGeo.topojson.feature(mapdata, mapdata.objects.idn).features[0];
+  // const nations = ChartGeo.topojson.feature(mapdata, mapdata.objects.idn).features;
+  fetch('./Provinsi (5).json').then((r) => r.json()).then((mapdata) => {
+  const nation = ChartGeo.topojson.feature(mapdata, mapdata.objects.idn).features[0];
+  const nations = ChartGeo.topojson.feature(mapdata, mapdata.objects.idn).features;
+
+
+
+//   const states = ChartGeo.topojson.feature(us, us.objects.states).features;
+
+  const chart = new Chart(document.getElementById("map").getContext("2d"), {
+    type: 'choropleth',
+    data: {
+      // labels: nations.map((d) => d.properties.PROVINSI),
+      labels: nations.map((d) => d.properties.name),
+
+      datasets: [{
+        label: 'Provinsi',
+        outline: nation,
+        data: nations.map((d) => ({feature: d, value: Math.random() * 10})),
+      }]
+    },
+    options: {
+      // responsive:true,
+      maintainAspectRatio:false,
+      // width:1200,
+      // height:800,
+      plugins: {
+        legend: {
+          display: false
+        },
+      },
+      // size : {
+      //   missing: 1,
+      //     mode: 'radius', // 'radius'
+      //     // mode: 'radius',
+      //     range: [2, 20],
+      // },
+      sizeScale :{
+        // range: [10, 30],
+      },
+      scales: {
+        
+        projection: {
+          padding:10,
+          axis: 'y',
+          // projectionOffset:[120,120],
+          projectionScale:1,
+          projection: 'mercator'  
+    //       projection:
+    // | GeoProjection
+    // | 'azimuthalEqualArea'
+    // | 'azimuthalEquidistant'
+    // | 'gnomonic'
+    // | 'orthographic'
+    // | 'stereographic'
+    // | 'equalEarth'
+    // | 'albers'
+    // | 'albersUsa'
+    // | 'conicConformal'
+    // | 'conicEqualArea'
+    // | 'conicEquidistant'
+    // | 'equirectangular'
+    // | 'mercator'
+    // | 'transverseMercator'
+    // | 'naturalEarth1';
+        },
+        // size: {
+        //   missing: 1,
+        //   mode: 'radius', // 'radius'
+        //   // mode: 'radius',
+        //   range: [2, 20],
+        // },
+        color: {
+          axis: 'y',
+          quantize: 5,
+          legend: {
+            position: 'bottom-right',
+            align: 'bottom'
+          },
+        }
+      },
+    }
+  });
+
+  // chart.canvas.parentNode.style.height = '500px';
+  // chart.resize(600, 600);
+  chart.scale(2,2)
+});
+</script>
+</html>
