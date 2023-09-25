@@ -1,29 +1,56 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-  <head>
-    <title>JQVMap - Indonesia Map</title>
-    <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
-    <link href="jqvmap-master\dist\jqvmap.css" media="screen" rel="stylesheet" type="text/css"/>
-  </head>
-  <body>
-    <div id="vmap" style="width: 900px; height: 400px;"></div>
-  </body>
-  <script type="text/javascript" src="http://code.jquery.com/jquery-1.11.3.min.js"></script>
-    <script type="text/javascript" src="jqvmap-master\dist\jquery.vmap.js"></script>
-    <script type="text/javascript" src="jqvmap-master\dist\maps\jquery.vmap.indonesia_new.js" charset="utf-8"></script>
-    <script>
-      jQuery(document).ready(function () {
-        jQuery('#vmap').vectorMap({
+<!DOCTYPE html>
+<html>
+<head>
+  <title>jVectorMap demo</title>
+  <link rel="stylesheet" href="js/jquery-jvectormap-2.0.5.css" />
+  <script src="js/jquery-1.8.2.js"></script>
+  <script src="js/kodewilayah.js"></script>
+  <script src="js/data.js"></script>
+
+  <script src="js/jquery-jvectormap-2.0.5.min.js"></script>
+  <script src="js/jquery-jvectormap-idn_new.js"></script>
+</head>
+<body>
+  <div id="world-map" style="width: 1000px; height: 600px"></div>
+  <script>
+
+    var data = {}, min = Number.MAX_VALUE, max = 0;
+    sampleData.forEach(el => {
+      data[el.id]= el.gdp;
+      if(el.gdp < min)
+        min = el.gdp;
+      if(el.gdp > max)
+        max = el.gdp;
+    });
+
+    console.log(min);
+    console.log(max);
+    $('#world-map').vectorMap(
+        {
           map: 'indonesia_new',
-          enableZoom: true,
-          showTooltip: true,
-          selectedColor: null,
-          onRegionClick: function(event, code, region){
-            console.log(" Anda mengklik : "+region);
-            event.preventDefault();
+          series: {
+            regions: [{
+              values: data,
+              scale: ['#C8EEFF', '#0071A4'],
+              normalizeFunction: 'polynomial'
+            }],
+            markers: [{
+              attribute: 'fill',
+              scale: ['#C8EEFF', '#0071A4'],
+              normalizeFunction: 'polynomial',
+              values: [min,max],
+              legend: {
+                vertical: true
+              }
+            }]
+          },
+          onRegionTipShow: function(e, el, code){
+            el.html(el.html()+' (Data : '+data[code]+')');
+          },
+          onRegionClick : function(e,code){
+            console.log("Anda mengklik provinsi " +code +" - " + kodeWilayah[code]);
           }
         });
-      });
-    </script>
+  </script>
+</body>
 </html>
